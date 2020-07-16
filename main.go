@@ -8,9 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// func init() {
-// 	initDb()
-// }
+var materials []Material
 
 func main() {
 	r := gin.Default()

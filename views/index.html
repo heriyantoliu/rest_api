@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<title>REST API</title>
+	</head>
+	<body>
+		<div id="app">
+			<h1>List Material</h1>
+			<table>
+				<thead>
+					<tr>
+						<th>Material Code</th>
+						<th>Description</th>
+						<th>UoM</th>
+						<th>Release Status</th>
+						<th>Release/Unrelease</th>
+						<th>Change</th>
+						<th>Delete</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="material in materialList">
+						<td>{{material.materialCode}}</td>
+						<td>{{material.materialDesc}}</td>
+						<td>{{material.uom}}</td>
+						<td>
+							<input type="checkbox" v-model="material.release" disabled />
+						</td>
+						<td>
+							<button
+								@click="toggleRelease(material.materialCode, material.release)"
+							>
+								<div v-if="material.release">
+									Unrelease
+								</div>
+								<div v-else>
+									Release
+								</div>
+							</button>
+						</td>
+						<td>
+							<button @click="onChange(material.materialCode)">Change</button>
+						</td>
+						<td>
+							<button @click="onDelete(material.materialCode)">Delete</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<button v-if="mode == 'change'" type="button" @click="backToCreate">
+				create
+			</button>
+			<br />
+			<hr />
+			<div v-if="mode == 'create'">
+				<h1>Create Material</h1>
+				<form @submit.prevent="onSubmit">
+					<table>
+						<tbody>
+							<tr>
+								<td><label for="">Material Code</label></td>
+								<td><input type="text" v-model="code" /></td>
+							</tr>
+							<tr>
+								<td><label for="">Material Description</label></td>
+								<td><input type="text" v-model="desc" /></td>
+							</tr>
+							<tr>
+								<td><label for="">UoM</label></td>
+								<td><input type="text" v-model="uom" /></td>
+							</tr>
+						</tbody>
+					</table>
+					<button type="submit">Submit</button>
+				</form>
+			</div>
+			<div v-else>
+				<h1>Change Material {{code}}</h1>
+				<form @submit.prevent="onUpdate">
+					<table>
+						<tbody>
+							<tr>
+								<td><label for="">Material Description</label></td>
+								<td><input type="text" v-model="desc" /></td>
+							</tr>
+							<tr>
+								<td><label for="">UoM</label></td>
+								<td><input type="text" v-model="uom" /></td>
+							</tr>
+						</tbody>
+					</table>
+					<button type="submit">Update</button>
+				</form>
+			</div>
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					mode: 'create',
+					url: 'http://localhost:9001',
+					materialList: [],
+					code: '',
+					desc: '',
+					uom: '',
+				},
+				methods: {
+					backToCreate: function () {
+						this.code = '';
+						this.desc = '';
+						this.uom = '';
+						this.mode = 'create';
+					},
+					toggleRelease: async function (id, release) {
+						await fetch(`${this.url}/material/${id}`, {
+							method: 'PATCH',
+							headers: {
+								'Content-Type': 'application/json',
+							},
+							body: JSON.stringify({
+								release: !release,
+							}),
+						});
+						this.getAll();
+					},
+					getAll: async function () {
+						const result = await fetch(`${this.url}/material`);
+						this.materialList = await result.json();
+					},
+					onSubmit: async function () {
+						const newMaterial = {
+							materialCode: this.code,
+							materialDesc: this.desc,
+							uom: this.uom,
+						};
+						await fetch(`${this.url}/material`, {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+							},
+							body: JSON.stringify(newMaterial),
+						});
+						this.getAll();
+						(this.code = ''), (this.desc = ''), (this.uom = '');
+					},
+					onUpdate: async function () {
+						const updateMaterial = {
+							materialDesc: this.desc,
+							uom: this.uom,
+						};
+						await fetch(`${this.url}/material/${this.code}`, {
+							method: 'PUT',
+							headers: {
+								'Content-Type': 'application/json',
+							},
+							body: JSON.stringify(updateMaterial),
+						});
+						this.getAll();
+						(this.code = ''),
+							(this.desc = ''),
+							(this.uom = ''),
+							(this.mode = 'create');
+					},
+					onChange: function (id) {
+						const material = this.materialList.filter(
+							(mat) => mat.materialCode == id
+						);
+
+						this.code = material[0].materialCode;
+						this.desc = material[0].materialDesc;
+						this.uom = material[0].uom;
+						this.mode = 'change';
+					},
+					onDelete: async function (id) {
+						await fetch(`${this.url}/material/${id}`, {
+							method: 'DELETE',
+						});
+						this.getAll();
+					},
+				},
+				created() {
+					this.getAll();
+				},
+			});
+		</script>
+	</body>
+</html>

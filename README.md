@@ -29,9 +29,9 @@ http://localhost:9001
 
 ## Endpoint
 
-GET /material - Get all material
-GET /material/:id - Get specific material
-POST /material - Create new material
-PUT /material/:id - Update material
-PATCH /material/:id - Release material
+GET /material - Get all material <br />
+GET /material/:id - Get specific material <br />
+POST /material - Create new material <br />
+PUT /material/:id - Update material <br />
+PATCH /material/:id - Release material <br />
 DELETE /material/:id - Delete material

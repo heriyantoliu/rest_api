@@ -8,7 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var materials []Material
+var materials = []Material{
+	{
+		Code:    "MAT001",
+		Desc:    "Material 001",
+		Uom:     "PC",
+		Group:   "Packaging",
+		Release: true,
+	},
+}
 
 func main() {
 	r := gin.Default()

@@ -18,12 +18,26 @@ func addMessage(c *gin.Context, message string, code int) {
 
 func getMaterial(c *gin.Context) {
 
+	grp := c.Query("grp")
+
 	if len(materials) == 0 {
 		addMessage(c, "Not Found", http.StatusNotFound)
 		return
 	}
 
-	c.JSON(http.StatusOK, materials)
+	var listMaterial []Material
+
+	if grp != "" {
+		for _, material := range materials {
+			if material.Group == grp {
+				listMaterial = append(listMaterial, material)
+			}
+		}
+	} else {
+		listMaterial = materials
+	}
+
+	c.JSON(http.StatusOK, listMaterial)
 	return
 }
 
@@ -34,7 +48,7 @@ func getMaterialDet(c *gin.Context) {
 	var respMaterial Material
 
 	for _, material := range materials {
-		if material.MaterialCode == id {
+		if material.Code == id {
 			respMaterial = material
 			break
 		}
@@ -56,7 +70,7 @@ func createMaterial(c *gin.Context) {
 
 	var materialExist bool = false
 	for _, material := range materials {
-		if material.MaterialCode == reqMaterial.MaterialCode {
+		if material.Code == reqMaterial.Code {
 			materialExist = true
 			break
 		}
@@ -85,9 +99,11 @@ func updateMaterial(c *gin.Context) {
 
 	var respMaterial Material
 	for i, material := range materials {
-		if material.MaterialCode == id {
-			materials[i].MaterialDesc = reqMaterial.MaterialDesc
+		if material.Code == id {
+			materials[i].Desc = reqMaterial.Desc
 			materials[i].Uom = reqMaterial.Uom
+			materials[i].Release = reqMaterial.Release
+			materials[i].Group = reqMaterial.Group
 			respMaterial = materials[i]
 			break
 		}
@@ -109,7 +125,7 @@ func deleteMaterial(c *gin.Context) {
 	var idx int
 	var materialExist bool = false
 	for i, material := range materials {
-		if material.MaterialCode == id {
+		if material.Code == id {
 			materialExist = true
 			idx = i
 			break
@@ -140,7 +156,7 @@ func releaseMaterial(c *gin.Context) {
 	var respMaterial Material
 
 	for i, material := range materials {
-		if material.MaterialCode == id {
+		if material.Code == id {
 			materials[i].Release = reqMaterial.Release
 			respMaterial = materials[i]
 		}

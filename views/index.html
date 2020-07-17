@@ -9,12 +9,24 @@
 	<body>
 		<div id="app">
 			<h1>List Material</h1>
+
+			<label for="cars">Choose a group:</label>
+
+			<select v-model="searchGrp" @change="changeGroup($event)">
+				<option>All</option>
+				<option>Packaging</option>
+				<option>Raw Material</option>
+			</select>
+
+			<hr />
+
 			<table>
 				<thead>
 					<tr>
 						<th>Material Code</th>
 						<th>Description</th>
 						<th>UoM</th>
+						<th>Group</th>
 						<th>Release Status</th>
 						<th>Release/Unrelease</th>
 						<th>Change</th>
@@ -23,16 +35,15 @@
 				</thead>
 				<tbody>
 					<tr v-for="material in materialList">
-						<td>{{material.materialCode}}</td>
-						<td>{{material.materialDesc}}</td>
+						<td>{{material.code}}</td>
+						<td>{{material.desc}}</td>
 						<td>{{material.uom}}</td>
+						<td>{{material.group}}</td>
 						<td>
 							<input type="checkbox" v-model="material.release" disabled />
 						</td>
 						<td>
-							<button
-								@click="toggleRelease(material.materialCode, material.release)"
-							>
+							<button @click="toggleRelease(material.code, material.release)">
 								<div v-if="material.release">
 									Unrelease
 								</div>
@@ -42,10 +53,10 @@
 							</button>
 						</td>
 						<td>
-							<button @click="onChange(material.materialCode)">Change</button>
+							<button @click="onChange(material.code)">Change</button>
 						</td>
 						<td>
-							<button @click="onDelete(material.materialCode)">Delete</button>
+							<button @click="onDelete(material.code)">Delete</button>
 						</td>
 					</tr>
 				</tbody>
@@ -69,6 +80,16 @@
 								<td><input type="text" v-model="desc" /></td>
 							</tr>
 							<tr>
+								<td><label for="">Group</label></td>
+								<td>
+									<select v-model="group">
+										<option>Packaging</option>
+										<option>Raw Material</option>
+									</select>
+								</td>
+							</tr>
+
+							<tr>
 								<td><label for="">UoM</label></td>
 								<td><input type="text" v-model="uom" /></td>
 							</tr>
@@ -90,6 +111,15 @@
 								<td><label for="">UoM</label></td>
 								<td><input type="text" v-model="uom" /></td>
 							</tr>
+							<tr>
+								<td><label for="">Group</label></td>
+								<td>
+									<select v-model="group">
+										<option>Packaging</option>
+										<option>Raw Material</option>
+									</select>
+								</td>
+							</tr>
 						</tbody>
 					</table>
 					<button type="submit">Update</button>
@@ -106,13 +136,31 @@
 					code: '',
 					desc: '',
 					uom: '',
+					group: '',
+					searchGrp: '',
 				},
+
 				methods: {
 					backToCreate: function () {
 						this.code = '';
 						this.desc = '';
 						this.uom = '';
+						this.group = '';
 						this.mode = 'create';
+					},
+					changeGroup: function (event) {
+						let url = `${this.url}/material`;
+						if (event.target.value != 'All') {
+							url = `${url}?grp=${event.target.value}`;
+						}
+
+						this.materialList = [];
+
+						fetch(url).then((res) => {
+							res.json().then((res) => {
+								this.materialList = res;
+							});
+						});
 					},
 					toggleRelease: async function (id, release) {
 						await fetch(`${this.url}/material/${id}`, {
@@ -132,9 +180,10 @@
 					},
 					onSubmit: async function () {
 						const newMaterial = {
-							materialCode: this.code,
-							materialDesc: this.desc,
+							code: this.code,
+							desc: this.desc,
 							uom: this.uom,
+							group: this.group,
 						};
 						await fetch(`${this.url}/material`, {
 							method: 'POST',
@@ -144,12 +193,17 @@
 							body: JSON.stringify(newMaterial),
 						});
 						this.getAll();
-						(this.code = ''), (this.desc = ''), (this.uom = '');
+						this.code = '';
+						this.desc = '';
+						this.uom = '';
+						this.group = '';
 					},
 					onUpdate: async function () {
 						const updateMaterial = {
-							materialDesc: this.desc,
+							desc: this.desc,
 							uom: this.uom,
+							group: this.group,
+							release: this.release,
 						};
 						await fetch(`${this.url}/material/${this.code}`, {
 							method: 'PUT',
@@ -165,12 +219,11 @@
 							(this.mode = 'create');
 					},
 					onChange: function (id) {
-						const material = this.materialList.filter(
-							(mat) => mat.materialCode == id
-						);
+						const material = this.materialList.filter((mat) => mat.code == id);
 
-						this.code = material[0].materialCode;
-						this.desc = material[0].materialDesc;
+						this.code = material[0].code;
+						this.desc = material[0].desc;
+						this.group = material[0].group;
 						this.uom = material[0].uom;
 						this.mode = 'change';
 					},

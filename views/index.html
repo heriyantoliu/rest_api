@@ -213,18 +213,19 @@
 							body: JSON.stringify(updateMaterial),
 						});
 						this.getAll();
-						(this.code = ''),
-							(this.desc = ''),
-							(this.uom = ''),
-							(this.mode = 'create');
+						this.code = '';
+						this.desc = '';
+						this.uom = '';
+						this.group = '';
+						this.mode = 'create';
 					},
 					onChange: function (id) {
-						const material = this.materialList.filter((mat) => mat.code == id);
+						const material = this.materialList.find((mat) => mat.code == id);
 
-						this.code = material[0].code;
-						this.desc = material[0].desc;
-						this.group = material[0].group;
-						this.uom = material[0].uom;
+						this.code = material.code;
+						this.desc = material.desc;
+						this.group = material.group;
+						this.uom = material.uom;
 						this.mode = 'change';
 					},
 					onDelete: async function (id) {

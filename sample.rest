@@ -1,0 +1,48 @@
+@host = localhost:9001
+
+### Get All Material
+GET http://{{host}}/material 
+
+### Get Packaging Material
+GET http://{{host}}/material?grp=Packaging
+
+### Get Raw Material
+GET http://{{host}}/material?grp=RAW Material
+
+
+
+### Create New Material
+POST http://{{host}}/material
+Content-Type: application/json
+
+{
+  "code": "MAT002",
+  "desc": "Material 002",
+  "uom": "PC",
+  "group": "RAW Material"
+}
+
+
+
+### Update Material
+PUT http://{{host}}/material/MAT002
+Content-Type: application/json
+
+{
+  "desc": "Material 002-A",
+  "uom": "KG",
+  "group": "RAW Material"
+}
+
+
+### Release/Unrelease Material
+PATCH http://{{host}}/material/MAT002/release 
+Content-Type: application/json
+
+{
+  "release": true
+}
+
+
+### Delete Material
+DELETE http://{{host}}/material/MAT002

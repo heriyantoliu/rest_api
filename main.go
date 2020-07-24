@@ -20,7 +20,7 @@ var materials = []Material{
 		Code:    "MAT002",
 		Desc:    "Material 002",
 		Uom:     "KG",
-		Group:   "RAW Material",
+		Group:   "Raw Material",
 		Release: true,
 	},
 }

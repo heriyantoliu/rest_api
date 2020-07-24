@@ -10,7 +10,7 @@ GET http://{{host}}/material/MAT001
 GET http://{{host}}/material?grp=Packaging
 
 ### Get Raw Material
-GET http://{{host}}/material?grp=RAW Material
+GET http://{{host}}/material?grp=Raw Material
 
 
 

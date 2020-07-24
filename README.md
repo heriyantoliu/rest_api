@@ -33,5 +33,5 @@ GET /material - Get all material <br />
 GET /material/:id - Get specific material <br />
 POST /material - Create new material <br />
 PUT /material/:id - Update material <br />
-PATCH /material/:id - Release material <br />
+PATCH /material/:id/release - Release material <br />
 DELETE /material/:id - Delete material

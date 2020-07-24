@@ -163,7 +163,7 @@
 						});
 					},
 					toggleRelease: async function (id, release) {
-						await fetch(`${this.url}/material/${id}`, {
+						await fetch(`${this.url}/material/${id}/release`, {
 							method: 'PATCH',
 							headers: {
 								'Content-Type': 'application/json',

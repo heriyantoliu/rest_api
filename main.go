@@ -36,7 +36,7 @@ func main() {
 	r.POST("/material", createMaterial)
 	r.PUT("/material/:id", updateMaterial)
 	r.DELETE("/material/:id", deleteMaterial)
-	r.PATCH("/material/:id", releaseMaterial)
+	r.PATCH("/material/:id/release", releaseMaterial)
 
 	r.Run(":9001")
 }

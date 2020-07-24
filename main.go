@@ -16,6 +16,13 @@ var materials = []Material{
 		Group:   "Packaging",
 		Release: true,
 	},
+	{
+		Code:    "MAT002",
+		Desc:    "Material 002",
+		Uom:     "KG",
+		Group:   "RAW Material",
+		Release: true,
+	},
 }
 
 func main() {

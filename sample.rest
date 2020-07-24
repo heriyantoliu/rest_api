@@ -3,6 +3,9 @@
 ### Get All Material
 GET http://{{host}}/material 
 
+### Get Specific Material
+GET http://{{host}}/material/MAT001
+
 ### Get Packaging Material
 GET http://{{host}}/material?grp=Packaging
 
@@ -16,27 +19,27 @@ POST http://{{host}}/material
 Content-Type: application/json
 
 {
-  "code": "MAT002",
-  "desc": "Material 002",
+  "code": "MAT003",
+  "desc": "Material 003",
   "uom": "PC",
-  "group": "RAW Material"
+  "group": "Packaging"
 }
 
 
 
 ### Update Material
-PUT http://{{host}}/material/MAT002
+PUT http://{{host}}/material/MAT003
 Content-Type: application/json
 
 {
-  "desc": "Material 002-A",
+  "desc": "Material 003-A",
   "uom": "KG",
-  "group": "RAW Material"
+  "group": "Packaging"
 }
 
 
 ### Release/Unrelease Material
-PATCH http://{{host}}/material/MAT002/release 
+PATCH http://{{host}}/material/MAT003/release 
 Content-Type: application/json
 
 {
@@ -45,4 +48,4 @@ Content-Type: application/json
 
 
 ### Delete Material
-DELETE http://{{host}}/material/MAT002
+DELETE http://{{host}}/material/MAT003

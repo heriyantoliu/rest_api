@@ -31,6 +31,7 @@ http://localhost:9001
 
 GET /material - Get all material <br />
 GET /material/:id - Get specific material <br />
+GET /material?group= - Filter group material <br />
 POST /material - Create new material <br />
 PUT /material/:id - Update material <br />
 PATCH /material/:id/release - Release material <br />
